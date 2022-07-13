@@ -1,0 +1,8 @@
+name: BCofrePlugin
+version: '${project.version}'
+main: com.github.brunoleitec.bcofreplugin.BCofrePlugin
+api-version: 1.19
+description: Plugin de cofre feito por brnzZ#3799
+commands:
+  vault:
+    description: yay
