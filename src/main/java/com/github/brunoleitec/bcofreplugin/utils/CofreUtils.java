@@ -2,7 +2,6 @@ package com.github.brunoleitec.bcofreplugin.utils;
 
 import com.github.brunoleitec.bcofreplugin.BCofrePlugin;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -16,72 +15,72 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 public class CofreUtils {
 
-    public static void storeItems(List<ItemStack> items, Player player){
+    public static void storeItems(List<ItemStack> items, Player player) {
 
         PersistentDataContainer data = player.getPersistentDataContainer();
 
-        if (items.size() == 0){
-            data.set(new NamespacedKey(BCofrePlugin.getPlugin(),"vault"), PersistentDataType.STRING, "");
-        }else{
+        if (items.size() == 0) {
+            data.set(new NamespacedKey(BCofrePlugin.getPlugin(), "vault"), PersistentDataType.STRING, "");
+        } else {
 
-            try{
+            try {
 
                 ByteArrayOutputStream io = new ByteArrayOutputStream();
                 BukkitObjectOutputStream os = new BukkitObjectOutputStream(io);
 
                 os.writeInt(items.size());
 
-                for (int i = 0; i < items.size(); i++){
+                for (int i = 0; i < items.size(); i++) {
                     os.writeObject(items.get(i));
                 }
 
                 os.flush();
 
-               byte[] rawdata = io.toByteArray();
+                byte[] rawData = io.toByteArray();
 
-               String encodedData = Base64.getEncoder().encodeToString(rawdata);
+                String encodedData = Base64.getEncoder().encodeToString(rawData);
 
-               data.set(new NamespacedKey(BCofrePlugin.getPlugin(),"vault"), PersistentDataType.STRING, "");
+                data.set(new NamespacedKey(BCofrePlugin.getPlugin(), "vault"), PersistentDataType.STRING, encodedData);
 
-               os.close();
+                os.close();
 
-            }catch (IOException exception){
-                System.out.println(exception );
+            } catch (IOException exception) {
+                System.out.println(exception);
             }
 
         }
 
     }
 
-    public static ArrayList<ItemStack> getItems(Player player){
+    public static ArrayList<ItemStack> getItems(Player player) {
 
         PersistentDataContainer data = player.getPersistentDataContainer();
 
         ArrayList<ItemStack> items = new ArrayList<>();
 
-        String encodedItems = data.get(new NamespacedKey(BCofrePlugin.getPlugin(),"vault"), PersistentDataType.STRING);
+        String encodedItems = data.get(new NamespacedKey(BCofrePlugin.getPlugin(), "vault"), PersistentDataType.STRING);
 
-        if (!encodedItems.isEmpty()){
-
+        if (!(encodedItems).isEmpty()) {
             byte[] rawData = Base64.getDecoder().decode(encodedItems);
 
-            try{
+            try {
 
                 ByteArrayInputStream io = new ByteArrayInputStream(rawData);
                 BukkitObjectInputStream in = new BukkitObjectInputStream(io);
 
                 int itemsCount = in.readInt();
 
-                for (int i = 0; i < itemsCount; i++){
+                for (int i = 0; i < itemsCount; i++) {
                     items.add((ItemStack) in.readObject());
                 }
 
                 in.close();
 
-            }catch (IOException | ClassNotFoundException ex){
+            } catch (IOException | ClassNotFoundException ex) {
                 System.out.println(ex);
             }
 

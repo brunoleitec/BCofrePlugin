@@ -2,7 +2,6 @@ package com.github.brunoleitec.bcofreplugin.listeners;
 
 import com.github.brunoleitec.bcofreplugin.BCofrePlugin;
 import com.github.brunoleitec.bcofreplugin.utils.CofreUtils;
-import jdk.vm.ci.code.ValueUtil;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,35 +18,35 @@ import java.util.Arrays;
 public class Listeners implements Listener {
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event){
+    public void onPlayerJoin(PlayerJoinEvent event) {
 
         Player player = event.getPlayer();
 
         PersistentDataContainer data = player.getPersistentDataContainer();
 
-        if (!data.has(new NamespacedKey(BCofrePlugin.getPlugin(),"vault"), PersistentDataType.STRING)){
-            data.set(new NamespacedKey(BCofrePlugin.getPlugin(),"vault"), PersistentDataType.STRING, "");
+        if (!data.has(new NamespacedKey(BCofrePlugin.getPlugin(), "vault"), PersistentDataType.STRING)) {
+            data.set(new NamespacedKey(BCofrePlugin.getPlugin(), "vault"), PersistentDataType.STRING, "");
         }
     }
 
 
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event){
+    public void onInventoryClose(InventoryCloseEvent event) {
 
         Player player = (Player) event.getPlayer();
 
-        if (event.getView().getTitle().equalsIgnoreCase("Seu Cofre Pessoal")){
+        if (event.getView().getTitle().equalsIgnoreCase("Seu Cofre Pessoal")) {
 
             ArrayList<ItemStack> prunedItems = new ArrayList<>();
 
-            Arrays.stream(player.getInventory().getContents())
+            Arrays.stream(event.getInventory().getContents())
                     .filter(itemStack -> {
-                        if (itemStack == null){
+                        if (itemStack == null) {
                             return false;
                         }
                         return true;
                     })
-                    .forEach(itemStack -> prunedItems.add(itemStack));
+                    .forEach(prunedItems::add);
 
             CofreUtils.storeItems(prunedItems, player);
 
